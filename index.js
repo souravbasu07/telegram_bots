@@ -81,6 +81,8 @@ const MathWizard = new WizardScene(
             ctx.reply("Enter all numbers to multiply. Use comma(,) after each number.")
         } else if (type === "divide") {
             ctx.reply("Enter 2 numbers. Divide 1st number by 2nd. Use comma(,) after each number.");
+        } else if (type === "percentage") {
+            ctx.reply("Enter 2 numbers. 1st number is total, 2nd is percentage. Use comma(,) after each number.");
         }
 
         return ctx.wizard.next();
@@ -100,6 +102,9 @@ const MathWizard = new WizardScene(
         } else if (type === "divide") {
             const nums = ctx.message.text.split(",").map(num => parseFloat(num.trim()));
             ctx.reply(divide(nums[0], nums[1]));
+        } else if (type === "percentage") {
+            const nums = ctx.message.text.split(",").map(num => parseFloat(num.trim()));
+            ctx.reply(percentage(nums[0], nums[1]));
         }
 
         return ctx.scene.leave();
@@ -112,6 +117,7 @@ function add(nums) {
 };
 
 function subtract(a, b) {
+    console.log(a, b);
     return a - b;
 };
 
@@ -123,6 +129,10 @@ function divide(a, b) {
     return a / b;
 };
 
+function percentage(a, b) {
+    return a * (b / 100);
+}
+
 const keyboard = Markup.inlineKeyboard([
     Markup.button.callback("Create poll", "create_poll"),
     Markup.button.callback("Create quiz", "create_quiz"),
@@ -130,10 +140,15 @@ const keyboard = Markup.inlineKeyboard([
 ]);
 
 const mathKeyboard = Markup.inlineKeyboard([
-    Markup.button.callback("Sum", "sum"),
-    Markup.button.callback("Subtract", "subtract"),
-    Markup.button.callback("Multiply", "multiply"),
-    Markup.button.callback("Divide", "divide")
+    [
+        Markup.button.callback("Sum", "sum"),
+        Markup.button.callback("Subtract", "subtract")
+    ],
+    [
+        Markup.button.callback("Multiply", "multiply"),
+        Markup.button.callback("Divide", "divide")
+    ],
+    [Markup.button.callback("Percentage", "percentage")]
 ]);
 
 const stage = new Stage([pollWizard, MathWizard]);
